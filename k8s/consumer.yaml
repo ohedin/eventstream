@@ -1,0 +1,16 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: eventstream-consumer
+  namespace: eventstream
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: eventstream-consumer
+        version: v1
+    spec:
+      containers:
+      - name: eventstream-consumer
+        image: gcr.io/eventstream/consumer

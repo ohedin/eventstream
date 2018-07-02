@@ -1,0 +1,17 @@
+apiVersion: skaffold/v1alpha2
+kind: Config
+build:
+  artifacts:
+  - imageName: gcr.io/eventstream/producer
+    workspace: .
+    bazel:
+      target: //:eventstream-producer.tar
+  - imageName: gcr.io/eventstream/consumer
+    workspace: .
+    bazel:
+      target: //:eventstream-consumer.tar
+  local: {}
+deploy:
+  kubectl:
+    manifests:
+      - k8s/*.yaml
