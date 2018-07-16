@@ -6,7 +6,7 @@ metadata:
   namespace: eventstream
 spec:
   ports:
-  - port: 29092
+  - port: 9092
   clusterIP: None
   selector:
     app: kafka
@@ -14,7 +14,7 @@ spec:
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
-  name: broker
+  name: kafka
   namespace: eventstream
 spec:
   serviceName: "kafka"
@@ -33,23 +33,7 @@ spec:
           value: "zookeeper:32181"
         - name: KAFKA_ADVERTISED_LISTENERS
           value: "PLAINTEXT://kafka:9092"
-          #KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+        - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR
+          value: "1"
         ports:
         - containerPort: 9092
----
-apiVersion: batch/v1
-kind: Job
-metadata:
-  name: topics-quickstart
-  namespace: eventstream
-spec:
-  template:
-    metadata:
-      name: topics-quickstart
-    spec:
-      containers:
-      - name: kafka
-        image: confluentinc/cp-kafka:4.1.1
-        command: ["kafka-topics"]
-        args: ["--create", "--topic", "PAGE_VISITS", "--partitions", "1", "--replication-factor", "1", "--if-not-exists", "--zookeeper", "zookeeper:32181"]
-      restartPolicy: Never
